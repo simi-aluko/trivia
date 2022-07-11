@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    tools:context=".features.numbers.presentation.fragments.NumbersFragment">
+
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/default_number"
+        android:textColor="@color/black2"
+        android:textSize="@dimen/text_size_xxxl"
+        android:textStyle="bold"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@id/numbers_options"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/favourite_btn"
+        app:layout_constraintEnd_toStartOf="@+id/numbers_options"/>
+
+    <ImageButton
+        android:id="@+id/favourite_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:src="@drawable/ic_star_outline_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/numbers_options"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="@id/favourite_btn"
+        app:layout_constraintTop_toBottomOf="@id/favourite_btn"
+        android:hint="@string/type">
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/numbers_options_dropdown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            android:focusable="false"
+            android:cursorVisible="false"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/number_trivia_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/default_long_text"
+        android:textSize="@dimen/text_size_m"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/numbers_options" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/enter_number_text_field"
+        android:visibility="visible"
+        android:hint="@string/enter_number"
+        android:inputType="number"
+        app:layout_constraintTop_toBottomOf="@+id/text_fields_barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        style="@style/text_input_field_style1"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/date_trivia_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/get_trivia_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_fields_barrier"
+        app:layout_constraintVertical_bias="0.0">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/enter_day_text_field"
+            android:hint="@string/enter_day"
+            app:layout_constraintEnd_toStartOf="@id/enter_month_text_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/text_input_field_style1" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/enter_month_text_field"
+            android:hint="@string/enter_month"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/enter_day_text_field"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/text_input_field_style1"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/get_trivia_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/default_btn_bg"
+        android:padding="10dp"
+        android:text="@string/get_trivia"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/text_fields_barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="number_trivia_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/number_trivia_text"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

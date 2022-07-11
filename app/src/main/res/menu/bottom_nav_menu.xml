@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/numbersFragment"
+        android:title="@string/numbers"
+        android:icon="@drawable/ic_number_1"/>
+    <item
+        android:id="@+id/quizFragment"
+        android:title="@string/quiz"
+        android:icon="@drawable/ic_question_answer_24"
+        />
+</menu>
