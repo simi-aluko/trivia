@@ -8,16 +8,21 @@
     <fragment
         android:id="@+id/numbersFragment"
         android:name="com.example.triviaapp.features.numbers.presentation.fragments.NumbersFragment"
-        android:label="fragment_numbers"
+        android:label="Number Trivia"
         tools:layout="@layout/fragment_numbers" />
     <fragment
-        android:id="@+id/savedTriviaFragment"
-        android:name="com.example.triviaapp.features.numbers.presentation.fragments.SavedTriviaFragment"
-        android:label="fragment_saved_trivia"
+        android:id="@+id/savedNumberTriviaFragment"
+        android:name="com.example.triviaapp.features.numbers.presentation.fragments.SavedNumberTriviaFragment"
+        android:label="Saved Number Trivia"
         tools:layout="@layout/fragment_saved_trivia" />
     <fragment
         android:id="@+id/quizFragment"
         android:name="com.example.triviaapp.features.numbers.presentation.fragments.QuizFragment"
-        android:label="fragment_quiz"
+        android:label="Quiz"
         tools:layout="@layout/fragment_quiz" />
+    <fragment
+        android:id="@+id/savedQuizFragment"
+        android:name="com.example.triviaapp.features.numbers.presentation.fragments.SavedQuizFragment"
+        android:label="Saved Quizzes"
+        tools:layout="@layout/fragment_saved_quiz" />
 </navigation>

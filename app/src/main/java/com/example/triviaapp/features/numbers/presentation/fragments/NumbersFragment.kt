@@ -1,14 +1,16 @@
 package com.example.triviaapp.features.numbers.presentation.fragments
 
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.example.triviaapp.R
 import com.example.triviaapp.core.NumberTriviaType.*
@@ -18,6 +20,9 @@ import com.example.triviaapp.features.numbers.presentation.viewmodels.NumbersVie
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
+import kotlin.getValue
+import kotlin.let
 
 /**
  * A simple [Fragment] subclass.
@@ -28,7 +33,9 @@ import kotlinx.coroutines.flow.*
 class NumbersFragment : Fragment() {
     private var _binding: FragmentNumbersBinding? = null
     private val binding get() = _binding!!
-    private val numbersViewModel: NumbersViewModel by viewModels()
+    private val numbersViewModel: NumbersViewModel by activityViewModels()
+
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -40,9 +47,22 @@ class NumbersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpTypeOptionsView()
         setUpNumbersInputField()
-        setUpGetTriviaBtn()
+        setUpClickListeners()
         setUpObservers()
+        setUpSharedPreferencesListener()
     }
+
+    private fun setUpSharedPreferencesListener() {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    private val listener =
+        OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            sharedPreferences?.let {
+                val currentTrivia = it.getString(key, "")
+                currentTrivia?.let { numbersViewModel.updateCurrentNumberTrivia(it) }
+            }
+        }
 
     private fun setUpObservers(){
         numbersViewModel.currentNumberTriviaLD.observe(viewLifecycleOwner) {
@@ -71,11 +91,26 @@ class NumbersFragment : Fragment() {
         numbersViewModel.isGetTriviaBtnEnabled.observe(viewLifecycleOwner){
             it?.let { binding.getTriviaBtn.isEnabled = it}
         }
+
+        numbersViewModel.isFavourite.observe(viewLifecycleOwner){
+            it?.let {
+                if(it) {
+                    binding.favouriteBtn.setImageResource(R.drawable.ic_star_24)
+                    numbersViewModel.saveTriviaToDB()
+                } else {
+                    binding.favouriteBtn.setImageResource(R.drawable.ic_star_outline_24)
+                    numbersViewModel.deleteTriviaFromDB()
+                }
+            }
+        }
     }
 
-    private fun setUpGetTriviaBtn(){
+    private fun setUpClickListeners(){
         binding.getTriviaBtn.setOnClickListener { numbersViewModel.getTrivia() }
         binding.getTriviaBtn.isEnabled = false
+        binding.favouriteBtn.setOnClickListener {
+            numbersViewModel.toggleFavourite()
+        }
     }
 
     private fun setUpNumbersInputField(){
@@ -117,7 +152,7 @@ class NumbersFragment : Fragment() {
         binding.numbersOptionsDropdown.setAdapter(adapter)
         binding.numbersOptionsDropdown.setText(items.first(), false)
 
-        binding.numbersOptionsDropdown.doOnTextChanged { text, start, before, count ->
+        binding.numbersOptionsDropdown.doOnTextChanged { text, _, _, _ ->
             when(text?.toString()){
                 Number.name -> numbersViewModel.setCurrentTriviaType(Number)
                 Random.name -> numbersViewModel.setCurrentTriviaType(Random)
@@ -131,5 +166,10 @@ class NumbersFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDetach() {
+        super.onDestroy()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener)
     }
 }

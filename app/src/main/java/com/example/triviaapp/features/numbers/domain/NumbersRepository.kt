@@ -10,4 +10,7 @@ interface NumbersRepository {
     suspend fun getRandomNumberTrivia(): Flow<NumberTriviaEntity?>
     suspend fun getNumberTrivia(number: Int): Flow<NumberTriviaEntity?>
     suspend fun getDateTrivia(month: Int, day: Int): Flow<NumberTriviaEntity?>
+    suspend fun saveTriviaToDB(trivia: NumberTriviaEntity)
+    suspend fun deleteTriviaFromDB(trivia: NumberTriviaEntity)
+    fun getAllTrivia(): Flow<List<NumberTriviaEntity>>
 }

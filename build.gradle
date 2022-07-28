@@ -30,6 +30,7 @@ allprojects {
         coroutinesVersion = '1.6.0'
         okhttpVersion = '5.0.0-alpha.2'
         lifecycle_version = '2.4.1'
+        roomVersion = '2.4.2'
     }
 }
 

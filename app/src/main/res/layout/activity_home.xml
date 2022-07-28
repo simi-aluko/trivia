@@ -15,13 +15,14 @@
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.AppBarLayout.PrimarySurface"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/top_app_bar"
+                android:id="@+id/tool_bar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:title="@string/app_name"
@@ -36,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <androidx.fragment.app.FragmentContainerView
+            <fragment
                 android:id="@+id/nav_host_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"

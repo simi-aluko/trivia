@@ -3,8 +3,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="get_trivia">Get Trivia</string>
     <string name="enter_number">Enter Number</string>
-    <string name="default_number">01</string>
-    <string name="default_long_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s,</string>
+    <string name="default_number">00</string>
+    <string name="default_long_text">Trivia text would show here</string>
     <string name="enter_month">Enter Month</string>
     <string name="enter_day">Enter Day</string>
     <string name="question">Question</string>

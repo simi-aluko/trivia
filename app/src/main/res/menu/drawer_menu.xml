@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
-        <item android:id="@+id/drawer_menu_numbers"
+        <item android:id="@+id/savedNumberTriviaFragment"
             android:title="@string/numbers"
             android:icon="@drawable/ic_star_24"
             android:iconTint="@color/gold" />
-        <item android:id="@+id/drawer_menu_quizzes"
+        <item android:id="@+id/savedQuizFragment"
             android:title="@string/quiz"
             android:icon="@drawable/ic_star_24"
             android:iconTint="@color/gold"/>

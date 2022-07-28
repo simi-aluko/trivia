@@ -1,15 +1,15 @@
 package com.example.triviaapp.features.numbers.presentation.viewmodels
 
+import android.content.SharedPreferences
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.triviaapp.core.NumberTriviaType
 import com.example.triviaapp.core.NumberTriviaType.*
 import com.example.triviaapp.core.NumberTriviaType.Number
+import com.example.triviaapp.core.strings.currentNumberTrivia
 import com.example.triviaapp.features.numbers.domain.NumbersRepository
 import com.example.triviaapp.features.numbers.domain.entities.NumberTriviaEntity
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NumbersViewModel @Inject constructor(private val numbersRepository: NumbersRepository) :
-    ViewModel() {
+class NumbersViewModel @Inject constructor(private val numbersRepository: NumbersRepository,
+                                           private val sharedPreferences: SharedPreferences) : ViewModel() {
 
     private val _currentNumberTriviaMLD = MutableLiveData<NumberTriviaEntity>()
     val currentNumberTriviaLD: LiveData<NumberTriviaEntity> = _currentNumberTriviaMLD
@@ -30,33 +30,37 @@ class NumbersViewModel @Inject constructor(private val numbersRepository: Number
     private val _currentDateMLD = MutableLiveData<Pair<Int, Int>>()
     val currentDateLD: LiveData<Pair<Int, Int>> = _currentDateMLD
     
-    private val _currentTriviaType = MutableLiveData<NumberTriviaType>()
+    private val _currentTriviaType = MutableLiveData(Number)
     val currentTriviaType: LiveData<NumberTriviaType> = _currentTriviaType
 
     private val _isGetTriviaBtnEnabled = MutableLiveData<Boolean>(false)
     val isGetTriviaBtnEnabled: LiveData<Boolean> = _isGetTriviaBtnEnabled
 
+    private val _isFavourite = MutableLiveData(false)
+    val isFavourite: LiveData<Boolean> = _isFavourite
+
     private fun getNumberTrivia(number: Int){
         viewModelScope.launch {
-            numbersRepository.getNumberTrivia(number).collect{ _currentNumberTriviaMLD.value = it }
+            numbersRepository.getNumberTrivia(number).collect{ it?.let { saveCurrentNumberTrivia(it) } }
         }
     }
 
     private fun getDateTrivia(day: Int, month: Int){
         viewModelScope.launch {
-            numbersRepository.getDateTrivia(day, month).collect { _currentNumberTriviaMLD.value = it }
+            numbersRepository.getDateTrivia(day, month).collect { it?.let { saveCurrentNumberTrivia(it) } }
         }
     }
 
     private fun getMathTrivia(number: Int){
         viewModelScope.launch {
-            numbersRepository.getMathNumberTrivia(number).collect { _currentNumberTriviaMLD.value = it}
+            numbersRepository.getMathNumberTrivia(number).collect { it?.let {
+                saveCurrentNumberTrivia(it) } }
         }
     }
 
     private fun getRandomNumberTrivia(){
         viewModelScope.launch {
-            numbersRepository.getRandomNumberTrivia().collect{ _currentNumberTriviaMLD.value = it }
+            numbersRepository.getRandomNumberTrivia().collect{ it?.let { saveCurrentNumberTrivia(it) } }
         }
     }
 
@@ -78,14 +82,8 @@ class NumbersViewModel @Inject constructor(private val numbersRepository: Number
     }
 
     fun getTrivia(){
-        Log.d("simi", "in get trivia")
         when(currentTriviaType.value){
-            Number -> {
-                Log.d("simi", "in get trivia outside number viewmodel ")
-                currentNumberLD.value?.let {
-                Log.d("simi", "in get trivia number $it viewmodel ")
-                getNumberTrivia(it)
-            } }
+            Number -> { currentNumberLD.value?.let { getNumberTrivia(it) } }
             Random -> getRandomNumberTrivia()
             Math -> { currentNumberLD.value?.let { getMathTrivia(it) } }
             Date -> { currentDateLD.value?.let { getDateTrivia(it.first, it.second) } }
@@ -95,5 +93,46 @@ class NumbersViewModel @Inject constructor(private val numbersRepository: Number
 
     fun setGetTriviaBtnEnabled(isEnabled: Boolean){
         _isGetTriviaBtnEnabled.value = isEnabled
+    }
+
+    fun updateCurrentNumberTrivia(triviaString: String){
+        val numberTrivia = Gson().fromJson(triviaString, NumberTriviaEntity::class.java)
+        numberTrivia?.let {
+            _currentNumberTriviaMLD.value = it
+        }
+    }
+
+    private fun saveCurrentNumberTrivia(trivia: NumberTriviaEntity){
+        with(sharedPreferences.edit()){
+            val triviaString = Gson().toJson(trivia)
+            triviaString?.let { this.putString(currentNumberTrivia, it) }
+            apply()
+        }
+    }
+
+    fun saveTriviaToDB(){
+        currentNumberTriviaLD.value?.let {
+            viewModelScope.launch{
+                numbersRepository.saveTriviaToDB(it)
+            }
+        }
+    }
+
+    fun deleteTriviaFromDB(){
+        currentNumberTriviaLD.value?.let { deleteTriviaFromDB(it) }
+    }
+
+    fun deleteTriviaFromDB(numberTriviaEntity: NumberTriviaEntity){
+        viewModelScope.launch {
+            numbersRepository.deleteTriviaFromDB(numberTriviaEntity)
+        }
+    }
+
+    fun getAllSavedTrivia(): LiveData<List<NumberTriviaEntity>> {
+        return numbersRepository.getAllTrivia().asLiveData()
+    }
+
+    fun toggleFavourite() {
+        _isFavourite.value = !(_isFavourite.value ?: false)
     }
 }

@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="20dp"
-    tools:context=".features.numbers.presentation.fragments.SavedTriviaFragment">
+    tools:context=".features.numbers.presentation.fragments.SavedNumberTriviaFragment">
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/saved_number_trivia_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
